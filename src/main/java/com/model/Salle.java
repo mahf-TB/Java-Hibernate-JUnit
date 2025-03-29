@@ -18,10 +18,13 @@ public class Salle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(unique = true)
     private String codeSalle;
+    
     @Column
     private String designation;
+    
     @Column
     private int capacite;
 

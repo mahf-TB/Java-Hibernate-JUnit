@@ -33,13 +33,17 @@ public class ProfesseurService {
         return prof;
     }
 
+    // Recherche d'un professeur avec un seul terme de recherche
+    public List<Professeur> rechercherProfByNPC(String searchQuery) {
+        return profDAO.rechercherProf(searchQuery);
+    }
+
     public void updateProf(int profId, Professeur profssr) {
         Professeur prof = profDAO.findById(profId);
         if (prof != null) {
             prof.setCodeProf(profssr.getCodeProf());
             prof.setNom(profssr.getNom());
             prof.setPrenom(profssr.getPrenom());
-
             prof.setGrade(profssr.getGrade());
             profDAO.update(prof);
         } else {
@@ -55,6 +59,6 @@ public class ProfesseurService {
         } else {
             System.out.println("Professeur introuvable avec ID : " + profId);
         }
-        profDAO.delete(prof);
+
     }
 }

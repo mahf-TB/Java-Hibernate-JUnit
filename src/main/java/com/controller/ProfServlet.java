@@ -7,9 +7,8 @@ package com.controller;
 import com.model.Professeur;
 import com.services.ProfesseurService;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +34,9 @@ public class ProfServlet extends HttpServlet {
         switch (action) {
             case "list":
                 afficherProfesseurs(request, response);
+                break;
+            case "search":
+                searchProfesseursByNPC(request, response);
                 break;
             case "edit":
                 afficherDetailsProf(request, response);
@@ -66,16 +68,24 @@ public class ProfServlet extends HttpServlet {
 
     private void afficherProfesseurs(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Professeur> listeProfesseurs = profService.getAllProfs();
-        System.out.println("Response data : " + listeProfesseurs);
+       
         request.setAttribute("professeurs", listeProfesseurs);
+        request.getRequestDispatcher("pages/profs/list.jsp").forward(request, response);
+    }
+
+    private void searchProfesseursByNPC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String query = request.getParameter("query");
+        List<Professeur> listeProfesseurs = profService.rechercherProfByNPC(query);
+        request.setAttribute("professeurs", listeProfesseurs);
+        request.setAttribute("query", query);
         request.getRequestDispatcher("pages/profs/list.jsp").forward(request, response);
     }
 
     private void afficherDetailsProf(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Professeur prof = profService.getProfById(id);
-        request.setAttribute("prof", prof);
-        request.getRequestDispatcher("edit-prof.jsp").forward(request, response);
+        request.setAttribute("profDetails", prof);
+        request.getRequestDispatcher("pages/profs/update.jsp").forward(request, response);
     }
 
     private void ajouterProf(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -83,8 +93,6 @@ public class ProfServlet extends HttpServlet {
         String nom = request.getParameter("nom");
         String prenom = request.getParameter("prenom");
         String grade = request.getParameter("grade");
-
-        System.out.println("Requête reçue par ProfServlet avec données: code=" + code + ", nom=" + nom + ", prenom=" + prenom + ", grade=" + grade);
 
         Professeur prof = new Professeur(code, nom, prenom, grade);
         profService.ajouterProf(prof);

@@ -7,6 +7,7 @@ package com.controller;
 import com.dao.SalleDAO;
 import com.model.Salle;
 import com.services.ProfesseurService;
+import com.services.SalleService;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,11 +21,13 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class SalleServlet extends HttpServlet {
 
-      private SalleDAO daoSalle;
+    private SalleDAO daoSalle;
+    private SalleService salleService;
 
     @Override
     public void init() throws ServletException {
         daoSalle = new SalleDAO();
+        salleService = new SalleService();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class SalleServlet extends HttpServlet {
                 //afficherProfesseurs(request, response);
                 break;
             case "edit":
-                //afficherDetailsProf(request, response);
+                afficherDetailsSalle(request, response);
                 break;
             default:
                 response.sendRedirect("/GestionSalles/profs/list");
@@ -57,7 +60,7 @@ public class SalleServlet extends HttpServlet {
                 ajouterSalle(request, response);
                 break;
             case "modifier":
-                //modifierProf(request, response);
+                modifierSalle(request, response);
                 break;
             case "supprimer":
                 //supprimerProf(request, response);
@@ -66,18 +69,34 @@ public class SalleServlet extends HttpServlet {
                 response.sendRedirect("/GestionSalles/profs/list");
         }
     }
-    
-    
-    
+
     private void ajouterSalle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String code = request.getParameter("code");
         String design = request.getParameter("design");
         String cpct = request.getParameter("capacite");
-       
+
         Salle salle = new Salle(code, design, Integer.parseInt(cpct));
         daoSalle.save(salle);
 
         response.sendRedirect("/GestionSalles/salle/list");
     }
 
+    private void afficherDetailsSalle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Salle salle = daoSalle.findById(id);
+        request.setAttribute("salleDetails", salle);
+        request.getRequestDispatcher("pages/salle/update.jsp").forward(request, response);
+    }
+    
+    
+        private void modifierSalle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String code = request.getParameter("code");
+        String design = request.getParameter("design");
+        int cpct = Integer.parseInt(request.getParameter("capacite"));
+        Salle sals = new Salle(code, design, cpct);
+        salleService.updateSalle(id, sals);
+
+        response.sendRedirect("/GestionSalles/salle/list?action=list");
+    }
 }

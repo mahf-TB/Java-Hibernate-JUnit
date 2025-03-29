@@ -19,6 +19,21 @@
     </head>
     <body>
         <div class="bg-gray-100 h-screen overflow-hidden">
+            <%
+
+                List<Professeur> profs = (List<Professeur>) request.getAttribute("professeurs");
+                String query = (String) request.getAttribute("query");
+                if (query == null) {
+                    query = "";
+                }
+                List<Professeur> professeurs = null;
+                if (profs != null) {
+                    professeurs = profs;
+                } else {
+                    ProfesseurService profService = new ProfesseurService();
+                    professeurs = profService.getAllProfs();
+                }
+            %>
             <%@include file="/includes/Header.jsp"%>
             <div class="flex flex-wrap lg:mx-40 mb-5">
                 <div class="w-full max-w-full px-3 mb-6  mx-auto">
@@ -30,10 +45,31 @@
                                     <span class="mr-3 font-semibold text-sm"> Professeurs</span>
                                     <span class="mt-1 font-medium text-gray-400 text-xs">Liste des professeurs </span>
                                 </h3>
-                                <div class="relative flex flex-wrap items-center my-2">
-                                   
-                                    <%@include file="/includes/addProfs-modal.jsp"%>
-                                </div>
+
+                                <form action="/GestionSalles/profs-servlet" method="GET">
+                                    <div class="relative flex items-center my-2">
+                                        <div class="flex  w-full mx-7 lg:max-w-[500px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
+                                            <input type="hidden" name="action" value="search">
+                                            <input type="text" id="searchInput" name="query"  
+                                                   value="<%= query%>"
+                                                   class="flex w-full text-xs bg-transparent px-3 text-gray-700 rtl:text-right outline-0" 
+                                                   placeholder="Recherche par nom ou prenom ou code" />
+                                            <div class="border-gray-400 border-opacity-70 my-1 border-l "></div>
+
+                                            <button type="submit" class="cursor-pointer relative rounded-full bg-transparent px-2 py-2">
+                                                <svg class="fill-none size-6"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                                                <g id="SVGRepo_iconCarrier"><path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></g>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <a href="add" class="rounded-xl bg-black px-10 py-2 text-white">
+                                            Ajouter
+                                        </a>
+                                    </div>
+                                </form>
                             </div>
                             <!-- end card header -->
                             <!-- card body  -->
@@ -51,9 +87,6 @@
                                         </thead>
                                         <tbody>
                                             <%
-                                                ProfesseurService profService = new ProfesseurService();
-                                                List<Professeur> professeurs = null;
-                                                professeurs = profService.getAllProfs();
                                                 if (professeurs != null && !professeurs.isEmpty()) {
                                                     for (Professeur prof : professeurs) {
                                             %>
@@ -77,14 +110,13 @@
                                                 </td>
                                                 <td class="p-3 pr-0 text-end">
                                                     <div class="z-50 flex items-center gap-2 justify-end">
-                                                        <button onclick="openModalUp('<%= prof.getId()%>', '<%= prof.getCodeProf()%>', '<%= prof.getNom()%>', '<%= prof.getPrenom()%>', '<%= prof.getGrade()%>')" 
-                                                                class="px-4 py-2 bg-blue-500 text-white text-xs rounded-md">
+                                                        <a href="/GestionSalles/profs-servlet?action=edit&id=<%= prof.getId()%>" 
+                                                           class="px-4 py-2 bg-blue-500 text-white text-xs rounded-md">
                                                             Modifier
-                                                        </button>
+                                                        </a>
                                                         <button onclick="openModalDelete('<%= prof.getId()%>')" class="px-4 py-2 bg-red-600 text-white text-xs rounded-md">
                                                             Supprimer
                                                         </button>
-                                                        <%@include file="/includes/updateProfs-modal.jsp"%>
                                                         <%@include file="/includes/deletProfs-modal.jsp"%>
                                                     </div>
                                                 </td>
@@ -95,7 +127,11 @@
                                             } else {
                                             %>
                                             <tr>
-                                                <td colspan="5" class="p-5 flex items-center justify-center">Aucun professeur trouvé.</td>
+                                                <td colspan="5" >
+                                                    <div class="p-5 bg-gray-200 flex items-center justify-center">
+                                                        <span>Aucun professeur trouvé...</span>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <% }%>
                                         </tbody>

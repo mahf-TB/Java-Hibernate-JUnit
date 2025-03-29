@@ -14,14 +14,11 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     </head>
     <body>
-        <div>
-
+        <div class="h-screen overflow-hidden">
             <%@include file="/includes/Header.jsp"%>
-
-            <div class="flex min-h-screen overflow-hidden items-center justify-start bg-white">
-
+            <div class="flex mt-20 h-screen justify-center bg-white">
                 <div class="mx-auto w-full max-w-lg">
-                    <h1 class="text-4xl font-medium">Ajouter un professeur</h1>
+                    <h1 class="text-4xl font-medium uppercase">Ajouter un professeur</h1>
                     <p class="mt-3 text-xs text-gray-500">Les champ avec * son obligatoire</p>
 
                     <form  method="POST" action="/GestionSalles/profs-servlet" class="mt-10">
@@ -48,9 +45,10 @@
                                 <label id="grade" class="absolute top-3 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Grade</label>
                             </div>
                         </div>
-                        <div class="flex justify-end mt-6 space-x-2">
-                            <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-md">Annuler</button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md">Ajouter</button>
+                        <div class="flex justify-start mt-10 space-x-2">
+
+                            <a href="/GestionSalles/profs/list" class="rounded-md bg-gray-200 px-10 py-2 text-gray-800">Retour</a>
+                            <button type="submit" class="rounded-md bg-black px-10 py-2 text-white">Enregistrer</button>
                         </div>
 
                     </form>

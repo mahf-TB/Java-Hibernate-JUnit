@@ -1,8 +1,3 @@
-<%-- 
-    Document   : list
-    Created on : 22 mars 2025, 07:18:29
-    Author     : mahefa
---%>
 
 <%@page import="com.dao.SalleDAO"%>
 <%@page import="com.model.Salle"%>
@@ -33,7 +28,9 @@
                                     <span class="mt-1 font-medium text-gray-400 text-xs">Liste des salle de classe </span>
                                 </h3>
                                 <div class="relative flex flex-wrap items-center my-2">
-                                    <%@include file="/includes/salleAdd-modal.jsp"%>
+                                    <a href="add" class=" rounded-xl bg-black px-10 py-2 text-white">
+                                        Ajouter
+                                    </a>
                                 </div>
                             </div>
                             <!-- end card header -->
@@ -51,8 +48,7 @@
                                         </thead>
                                         <tbody>
                                             <%
-                                                SalleDAO profDAO =  new SalleDAO();
-                                                
+                                                SalleDAO profDAO = new SalleDAO();
                                                 List<Salle> salles = null;
                                                 salles = profDAO.findAll();
                                                 if (salles != null && !salles.isEmpty()) {
@@ -72,17 +68,17 @@
                                                         <%=  sll.getCapacite()%>
                                                     </span>
                                                 </td>
-                                                
+
                                                 <td class="p-3 pr-0 text-end">
                                                     <div class="z-50 flex items-center gap-2 justify-center">
-                                                        <button onclick="openModalUp('<%= sll.getId()%>', '<%= sll.getCodeSalle()%>', '<%= sll.getDesignation()%>', '<%= sll.getCapacite()%>'" 
-                                                                class="px-4 py-2 bg-blue-500 text-white text-xs rounded-md">
+                                                        
+                                                        <a href="/GestionSalles/salle-servlet?action=edit&id=<%= sll.getId()%>" 
+                                                           class="px-4 py-2 bg-blue-500 text-white text-xs rounded-md">
                                                             Modifier
-                                                        </button>
+                                                        </a>
                                                         <button onclick="openModalDelete('<%= sll.getId()%>')" class="px-4 py-2 bg-red-600 text-white text-xs rounded-md">
                                                             Supprimer
                                                         </button>
-                                                        <%@include file="/includes/updateProfs-modal.jsp"%>
                                                         <%@include file="/includes/deletProfs-modal.jsp"%>
                                                     </div>
                                                 </td>
