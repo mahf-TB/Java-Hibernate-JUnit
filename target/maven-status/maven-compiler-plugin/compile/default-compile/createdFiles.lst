@@ -1,0 +1,14 @@
+com/services/ProfesseurService.class
+com/model/Salle.class
+com/dao/SalleDAO.class
+com/model/Professeur.class
+com/filters/UrlRewriteFilter.class
+com/controller/SalleServlet.class
+Main.class
+com/gestionsalles/resources/JakartaEE10Resource.class
+com/dao/DAOGeneric.class
+com/utils/HibernateUtil.class
+com/controller/ProfServlet.class
+com/dao/ProfesseurDAO.class
+com/model/Occuper.class
+com/dao/OccuperDAO.class
