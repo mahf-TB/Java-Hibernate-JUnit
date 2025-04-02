@@ -13,6 +13,7 @@ com/dao/DAOGeneric.class
 com/utils/HibernateUtil.class
 com/controller/ProfServlet.class
 com/controller/OccuperServlet.class
+com/websocket/PlanningWebSocket.class
 com/dao/ProfesseurDAO.class
 com/model/Occuper.class
 com/services/SalleService.class

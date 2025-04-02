@@ -36,7 +36,7 @@
             %>
             <%@include file="/includes/Header.jsp"%>
             <div class="flex flex-wrap lg:mx-40 mb-5">
-                <div class="w-full max-w-full px-3 mb-6  mx-auto">
+                <div class="w-full max-w-full mb-6  mx-auto">
                     <div class="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-white m-5">
                         <div class="relative flex flex-col min-w-0 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30">
                             <!-- card header -->
@@ -48,7 +48,7 @@
 
                                 <form action="/GestionSalles/profs-servlet" method="GET">
                                     <div class="relative flex items-center my-2">
-                                        <div class="flex  w-full mx-7 lg:max-w-[500px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
+                                        <div class="flex  w-full mx-7 lg:max-w-[600px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
                                             <input type="hidden" name="action" value="search">
                                             <input type="text" id="searchInput" name="query"  
                                                    value="<%= query%>"

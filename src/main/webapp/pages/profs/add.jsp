@@ -14,35 +14,37 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     </head>
     <body>
-        <div class="h-screen overflow-hidden">
+        <div class="h-screen overflow-hidden  overflow-y-auto ">
             <%@include file="/includes/Header.jsp"%>
-            <div class="flex mt-20 h-screen justify-center bg-white">
+            <div class="flex mt-20  h-screen justify-center bg-white px-4">
                 <div class="mx-auto w-full max-w-lg">
-                    <h1 class="text-4xl font-medium uppercase">Ajouter un professeur</h1>
-                    <p class="mt-3 text-xs text-gray-500">Les champ avec * son obligatoire</p>
+                    <h1 class="text-4xl font-medium uppercase max-sm:text-2xl">Ajouter un professeur</h1>
+                    <p class="mt-3 text-xs text-gray-500  mb-5">Les champ avec * son obligatoire</p>
 
-                    <form  method="POST" action="/GestionSalles/profs-servlet" class="mt-10">
+                    <form  method="POST" action="/GestionSalles/profs-servlet" >
                         <input type="hidden" name="action" value="ajouter">
 
                         <div class="grid gap-6 ">
                             <div class="relative z-0">
-                                <input type="text" id="createCode" name="code" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
-                                <label id="code" class="absolute top-3 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Code</label>
+                                <input type="text" id="createCode" name="code" 
+                                       class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
+                                <label id="code" 
+                                       class="absolute top-3  text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600"
+                                       >Code</label>
+                            </div>
+                            <div class="relative z-0">
+                                <input type="text" id="createNom" name="nom" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0  text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
+                                <label id="nom"  class="absolute top-3  text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Nom</label>
                             </div>
 
                             <div class="relative z-0">
-                                <input type="text" id="createNom" name="nom" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
-                                <label id="nom"  class="absolute top-3 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Nom</label>
+                                <input type="text" id="createPrenom" name="prenom" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
+                                <label id="prenom" class="absolute top-3  text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Prénom</label>
                             </div>
 
                             <div class="relative z-0">
-                                <input type="text" id="createPrenom" name="prenom" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
-                                <label id="prenom" class="absolute top-3 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Prénom</label>
-                            </div>
-
-                            <div class="relative z-0">
-                                <input type="text" id="createGrade" name="grade" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
-                                <label id="grade" class="absolute top-3 text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Grade</label>
+                                <input type="text" id="createGrade" name="grade" class="peer block w-full border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0" placeholder=" " required />
+                                <label id="grade" class="absolute top-3  text-gray-500 duration-300 transform -translate-y-6 scale-75 origin-[0] peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600">Grade</label>
                             </div>
                         </div>
                         <div class="flex justify-start mt-10 space-x-2">

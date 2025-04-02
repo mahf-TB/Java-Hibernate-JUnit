@@ -4,6 +4,7 @@
     Author     : mahefa
 --%>
 
+<%@page import="java.util.Map"%>
 <%@page import="com.dao.SalleDAO"%>
 <%@page import="com.model.Salle"%>
 <%@page import="com.model.Professeur"%>
@@ -15,7 +16,6 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Formulaire d'ajouter un prof</title>
-
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <style>
             .-z-1 {
@@ -56,6 +56,22 @@
 
     </head>
     <body>
+        <%!
+            public String isSelected(Map<String, Object> formData, String key, long value) {
+                if (formData != null && formData.get(key) != null) {
+                    String formValue = formData.get(key).toString();
+                    try {
+                        long formLongValue = Long.parseLong(formValue); // Conversion en long
+                        if (formLongValue == value) {
+                            return "selected";
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorer l'erreur de format si elle se produit
+                    }
+                }
+                return "";
+            }
+        %>
         <%
             SalleDAO profDAO = new SalleDAO();
             List<Salle> salles = profDAO.findAll();
@@ -63,41 +79,34 @@
             ProfesseurService profService = new ProfesseurService();
             List<Professeur> professeurs = profService.getAllProfs();
 
+            Map<String, Object> formData = (Map<String, Object>) request.getAttribute("formData");
+
         %>
         <div class="h-screen overflow-hidden">
             <%@include file="/includes/Header.jsp"%>
-            <div class="flex mt-10 h-screen justify-center bg-white">
+            <div class="flex mt-10 h-screen justify-center bg-white  overflow-y-auto  px-4">
                 <div class="mx-auto w-full max-w-xl">
                     <h1 class="text-4xl font-medium uppercase ">Créer un nouveau planning</h1>
-                    <p class="mt-3 text-xs text-gray-500">Les champ avec * son obligatoire</p>
+                    <p class="mt-3 text-xs text-gray-500 mb-5">Les champ avec * son obligatoire</p>
 
-                    <form  method="POST" action="/GestionSalles/occuper-servlet" class="mt-5">
+                    <form  method="POST" action="/GestionSalles/occuper-servlet" >
+                        <% if (request.getAttribute("error") != null) {%>
+                        <div class="bg-red-100 text-red-500 p-4 rounded-lg my-5">
+                            <%= request.getAttribute("error")%>
+                        </div>
+                        <% }%>
                         <input type="hidden" name="action" value="ajouter">
-
+                        <input type="hidden" name="type" value="COURS">
                         <div class="grid gap-6">
-                            <!-- Type evenement  -->
-                            <div class="relative z-0 w-full ">
-                                <select
-                                    name="type"
-                                    value=""
-                                    onclick="this.setAttribute('value', this.value);"
-                                    class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black border-gray-200"
-                                    >
-                                    <option value="" selected disabled hidden></option>
-                                    <option value="COURS">COURS </option>
-                                    <option value="REUNION">REUNION </option>
-                                    <option value="EVENEMENT">EVENEMENT </option>
 
-                                </select>
-                                <label for="type" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Select an type d'events</label>
-                                <span class="text-sm text-red-600 hidden" id="error">Option has to be selected</span>
-                            </div>
                             <!-- Date du events  -->
                             <div class="relative z-0 w-full ">
                                 <input
                                     type="text"
                                     name="date"
-                                    placeholder=" "
+                                    placeholder=""
+                                    required
+                                    value="<%= formData != null && formData.get("date") != null ? formData.get("date") : ""%>"
                                     onclick="this.setAttribute('type', 'date');"
                                     class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
                                     />
@@ -111,22 +120,26 @@
                                         type="text"
                                         name="heureDebut"
                                         placeholder=" "
+                                        required
+                                        value="<%= formData != null && formData.get("heureDebut") != null ? formData.get("heureDebut") : ""%>"
                                         onclick="this.setAttribute('type', 'time');"
                                         class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
                                         />
-                                    <label for="heureDebut" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Time</label>
+                                    <label for="heureDebut" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Début à </label>
                                     <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
                                 </div>
-
+                                
                                 <div class="relative z-0 w-full">
                                     <input
                                         type="text"
                                         name="heureFin"
                                         placeholder=" "
+                                        required
+                                        value="<%= formData != null && formData.get("heureFin") != null ? formData.get("heureFin") : ""%>"
                                         onclick="this.setAttribute('type', 'time');"
                                         class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
                                         />
-                                    <label for="heureFin" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Time</label>
+                                    <label for="heureFin" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Finie à</label>
                                     <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
                                 </div>
                             </div>
@@ -134,7 +147,8 @@
                             <div class="relative z-0 w-full ">
                                 <select
                                     name="profId"
-                                    value=""
+
+                                    required
                                     onclick="this.setAttribute('value', this.value);"
                                     class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black border-gray-200"
                                     >
@@ -142,11 +156,13 @@
                                     <%                                        if (professeurs != null && !professeurs.isEmpty()) {
                                             for (Professeur prof : professeurs) {
                                     %>
-                                    <option value="<%= prof.getId() %>"><%= prof.getNom() + " " + prof.getPrenom()%> </option>
+                                    <option 
+                                        <%= isSelected(formData, "profId", prof.getId())%>
+                                        value="<%= prof.getId()%>"><%= prof.getNom() + " " + prof.getPrenom()%> </option>
                                     <%
                                             }
                                         }
-                                    %>
+                                    %>w
 
 
                                 </select>
@@ -157,7 +173,7 @@
                             <div class="relative z-0 w-full ">
                                 <select
                                     name="salleId"
-                                    value=""
+                                    required
                                     onclick="this.setAttribute('value', this.value);"
                                     class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none z-1 focus:outline-none focus:ring-0 focus:border-black border-gray-200"
                                     >
@@ -166,7 +182,9 @@
                                         if (salles != null && !salles.isEmpty()) {
                                             for (Salle salle : salles) {
                                     %>
-                                    <option value="<%= salle.getId() %>"><%= salle.getDesignation() + " (" + salle.getCodeSalle() + ")"%> </option>
+                                    <option 
+                                        <%= isSelected(formData, "salleId", salle.getId())%>
+                                        value="<%= salle.getId()%>"><%= salle.getDesignation() + " (" + salle.getCodeSalle() + ")"%> </option>
                                     <%
                                             }
                                         }
@@ -189,7 +207,7 @@
 
         <script>
             'use strict'
-
+            
             document.getElementById('button').addEventListener('click', toggleError);
             const errMessages = document.querySelectorAll('#error');
 

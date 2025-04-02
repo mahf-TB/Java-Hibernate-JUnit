@@ -11,7 +11,11 @@ package com.model.enumModel;
 public enum TypeOccupation {
     COURS,
     REUNION,
-    EVENEMENT,
+    EVENEMENT,;
+
+    public static TypeOccupation valueOf(Object get) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
 
 

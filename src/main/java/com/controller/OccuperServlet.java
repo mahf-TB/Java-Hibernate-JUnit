@@ -4,22 +4,20 @@
  */
 package com.controller;
 
-import com.model.Occuper;
-import com.model.Professeur;
-import com.model.Salle;
 import com.model.enumModel.TypeOccupation;
 import com.services.OccuperService;
-import com.services.ProfesseurService;
-import com.services.SalleService;
+
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Time;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -28,14 +26,11 @@ import java.time.LocalTime;
 public class OccuperServlet extends HttpServlet {
 
     private OccuperService occpService;
-    private ProfesseurService profService;
-    private SalleService salleService;
 
     @Override
     public void init() throws ServletException {
         occpService = new OccuperService();
-        profService = new ProfesseurService();
-        salleService = new SalleService();
+
     }
 
     @Override
@@ -58,30 +53,56 @@ public class OccuperServlet extends HttpServlet {
                 //modifierProf(request, response);
                 break;
             case "supprimer":
-                //supprimerProf(request, response);
+                supprimerPlanning(request, response);
                 break;
             default:
                 response.sendRedirect("/GestionSalles/planning/list");
         }
     }
 
-    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         TypeOccupation type = TypeOccupation.valueOf(request.getParameter("type"));
         LocalDate date = LocalDate.parse(request.getParameter("date"));
-        System.out.println("Requête " + request.getParameter("heureDebut"));
+
         LocalTime heureDebut = LocalTime.parse(request.getParameter("heureDebut"));
         LocalTime heureFin = LocalTime.parse(request.getParameter("heureFin"));
-        
+
         int profId = Integer.parseInt(request.getParameter("profId"));
         int salleId = Integer.parseInt(request.getParameter("salleId"));
 
-        Professeur prof = profService.getProfById(profId);
-        Salle sls = salleService.getSalleById(salleId);
+        Map<String, Object> formData = new HashMap<>();
+        formData.put("heureDebut", request.getParameter("heureDebut"));
+        formData.put("heureFin", request.getParameter("heureFin"));
+        formData.put("type", request.getParameter("type"));
+        formData.put("date", request.getParameter("date"));
+        formData.put("profId", request.getParameter("profId"));
+        formData.put("salleId", request.getParameter("salleId"));
 
-        Occuper pls = new Occuper(date, type, heureDebut, heureFin, prof, sls);
-        occpService.ajouterPlanning(pls);
+        // Vérifier que heureDebut est avant heureFin
+        if (heureDebut.isAfter(heureFin)) {
+            request.setAttribute("error", "L'heure de début doit être inférieure à l'heure de fin.");
+            request.setAttribute("formData", formData);
+            request.getRequestDispatcher("pages/planning/add.jsp").forward(request, response);
+            return;
+        }
+        boolean estDisponible = occpService.salleDisponible(date, heureDebut, heureFin, salleId);
 
-        response.sendRedirect("/GestionSalles/profs/list");
+        if (!estDisponible) {
+            request.setAttribute("error", "La salle est déjà occupée à ce créneau.");
+            request.setAttribute("formData", formData);
+            request.getRequestDispatcher("pages/planning/add.jsp").forward(request, response);
+            return;
+        }
+
+        occpService.ajouterPlanning(date, type, heureDebut, heureFin, profId, salleId);
+
+        response.sendRedirect("/GestionSalles/planning/list");
     }
 
+    private void supprimerPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        occpService.deleteOccupation(id);
+
+        response.sendRedirect("/GestionSalles/planning/list");
+    }
 }

@@ -8,6 +8,7 @@
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/utils/HibernateUtil.java
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/model/Occuper.java
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/dao/OccuperDAO.java
+/Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/websocket/PlanningWebSocket.java
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/dao/SalleDAO.java
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/controller/OccuperServlet.java
 /Users/Bienvenu/NetBeansProjects/GestionSalles/src/main/java/com/model/Salle.java

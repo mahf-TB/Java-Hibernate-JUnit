@@ -16,9 +16,11 @@
     </head>
     <body>
         <div class="bg-gray-100 h-screen overflow-hidden">
-            <%@include file="/includes/Header.jsp"%>
+            <div class="sticky top-0">
+                <%@include file="/includes/Header.jsp"%>
+            </div>
             <div class="flex flex-wrap lg:mx-40 mb-5">
-                <div class="w-full max-w-full px-3 mb-6  mx-auto">
+                <div class="w-full max-w-full mb-6  mx-auto">
                     <div class="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-[.95rem] bg-white m-5">
                         <div class="relative flex flex-col min-w-0 break-words border border-dashed bg-clip-border rounded-2xl border-stone-200 bg-light/30">
                             <!-- card header -->
@@ -71,7 +73,7 @@
 
                                                 <td class="p-3 pr-0 text-end">
                                                     <div class="z-50 flex items-center gap-2 justify-center">
-                                                        
+
                                                         <a href="/GestionSalles/salle-servlet?action=edit&id=<%= sll.getId()%>" 
                                                            class="px-4 py-2 bg-blue-500 text-white text-xs rounded-md">
                                                             Modifier
@@ -79,7 +81,7 @@
                                                         <button onclick="openModalDelete('<%= sll.getId()%>')" class="px-4 py-2 bg-red-600 text-white text-xs rounded-md">
                                                             Supprimer
                                                         </button>
-                                                        <%@include file="/includes/deletProfs-modal.jsp"%>
+                                                        <%@include file="/includes/deleteSalle.jsp"%>
                                                     </div>
                                                 </td>
                                             </tr>

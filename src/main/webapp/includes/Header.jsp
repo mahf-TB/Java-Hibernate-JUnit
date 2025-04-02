@@ -1,5 +1,5 @@
 <header>
-    <nav class="sticky border-gray-200 bg-gray-900">
+    <nav class=" border-gray-200 bg-gray-900">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="https://flowbite.com/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <div>
@@ -33,5 +33,15 @@
             </div>
         </div>
     </nav>
-
 </header>
+
+<script>
+    // Sélectionner le bouton qui ouvre et ferme le menu
+    const menuToggleButton = document.querySelector('[data-collapse-toggle="navbar-default"]');
+    const navbar = document.getElementById('navbar-default');
+
+    // Ajouter l'écouteur d'événements
+    menuToggleButton.addEventListener('click', function () {
+        navbar.classList.toggle('hidden'); // Basculer la classe 'hidden' pour afficher/masquer le menu
+    });
+</script>
