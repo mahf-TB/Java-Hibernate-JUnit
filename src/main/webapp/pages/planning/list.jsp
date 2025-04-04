@@ -20,7 +20,7 @@
         <div class="bg-white ">
             <%@include file="/includes/Header.jsp"%>
             <section class="container px-6 py-10 mx-auto mb-14">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between max-lg:flex-col max-lg:items-start">
                     <div>
                         <h1 class="text-xl font-semibold text-gray-800 capitalize lg:text-2xl ">
                             Découvrez nos  <span class="underline decoration-blue-500">Plannings Occuper</span>
@@ -29,20 +29,25 @@
                             Consultez les plannings disponibles pour une gestion optimale des salles.
                         </p>
                     </div>
-                    <div class="flex  w-full lg:max-w-[600px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
-                        <input type="hidden" name="action" value="search">
-                        <input type="text" id="searchInput" name="query"  
-                               class="flex w-full text-xs bg-transparent px-3 text-gray-700 rtl:text-right outline-0" 
-                               placeholder="Recherche par nom ou prenom ou code" />
-                        <div class="border-gray-400 border-opacity-70 my-1 border-l "></div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex  w-full lg:max-w-[600px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
+                            <input type="hidden" name="action" value="search">
+                            <input type="text" id="searchInput" name="query"  
+                                   class="flex w-full text-xs bg-transparent px-3 text-gray-700 rtl:text-right outline-0" 
+                                   placeholder="Recherche planning par prof" />
+                            <div class="border-gray-400 border-opacity-70 my-1 border-l "></div>
 
-                        <button type="submit" class="cursor-pointer relative rounded-full bg-transparent px-2 py-2">
-                            <svg class="fill-none size-6"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
-                            <g id="SVGRepo_iconCarrier"><path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></g>
-                            </svg>
-                        </button>
+                            <button type="submit" class="cursor-pointer relative rounded-full bg-transparent px-2 py-2">
+                                <svg class="fill-none size-6"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0" />
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                                <g id="SVGRepo_iconCarrier"><path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#999" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></g>
+                                </svg>
+                            </button>
+                        </div>
+                        <a href="/GestionSalles/planning/add" class="rounded-xl bg-black px-10 py-2 text-white">
+                            Ajouter
+                        </a>
                     </div>
                 </div>
 
@@ -57,9 +62,9 @@
                         if (occps != null && !occps.isEmpty()) {
                             for (Occuper occ : occps) {
                     %>
-                    <div class="p-4 space-y-4 border-2 border-blue-400 rounded-xl bg-white shadow-lg">
+                    <div class="p-4 space-y-4 border-2  rounded-xl  <%= occ.isEstPasse() ? "border-gray-400 bg-gray-100" :"bg-white border-blue-400 shadow-lg"%> ">
                         <div class="flex items-center gap-4">
-                            <span class="inline-block text-blue-500">
+                            <span class="inline-block text-blue-500 <%= occ.isEstPasse() ? "text-gray-500 ":"text-blue-500 " %>">
                                 <!-- Icône pour chaque tâche -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
@@ -82,7 +87,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
-                                <p><strong>Date : </strong> <%= occ.getDate()%></p> 
+                                <p><strong>Date : </strong> <%= occ.getFormattedDate()%></p> 
                             </div>
                             <div class="flex space-x-2  ">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-compass" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -119,11 +124,12 @@
                         </div>
                         <!-- Boutons Modifier et Supprimer -->
                         <div class="flex space-x-4 mt-4 justify-end">
-                            <button class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600 transition-colors duration-200">
+                            <a href="/GestionSalles/occuper-servlet?action=edit&id=<%= occ.getId()%>" 
+                               class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600 transition-colors duration-200 <%= occ.isEstPasse() ? "hidden ":"" %>">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4h4v4M16 4l5 5M4 12v7a1 1 0 001 1h11a1 1 0 001-1v-7M4 12l5 5" />
                                 </svg>
-                            </button>
+                            </a>
                             <!-- Bouton Supprimer -->
                             <button onclick="openModalDelete('<%= occ.getId()%>')" class="flex items-center justify-center w-8 h-8 text-white bg-red-500 rounded-full hover:bg-red-600 transition-colors duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -148,7 +154,7 @@
                 <div class="md:w-72 px-6 md:px-0">
                     <div class="p-2 bg-blue-600 rounded-lg shadow-lg sm:p-3">
                         <div class="flex flex-wrap items-center justify-between">
-                            <a href="add" class="flex items-center flex-1 w-0">
+                            <a href="/GestionSalles/planning/add" class="flex items-center flex-1 w-0">
                                 <span class="flex p-2 bg-blue-800 rounded-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          class="h-6 w-6 text-white" fill="none"

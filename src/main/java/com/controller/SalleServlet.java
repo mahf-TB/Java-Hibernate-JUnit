@@ -63,7 +63,7 @@ public class SalleServlet extends HttpServlet {
                 modifierSalle(request, response);
                 break;
             case "supprimer":
-                //supprimerProf(request, response);
+                supprimerUnSalle(request, response);
                 break;
             default:
                 response.sendRedirect("/GestionSalles/profs/list");
@@ -87,9 +87,8 @@ public class SalleServlet extends HttpServlet {
         request.setAttribute("salleDetails", salle);
         request.getRequestDispatcher("pages/salle/update.jsp").forward(request, response);
     }
-    
-    
-        private void modifierSalle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    private void modifierSalle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String code = request.getParameter("code");
         String design = request.getParameter("design");
@@ -98,5 +97,12 @@ public class SalleServlet extends HttpServlet {
         salleService.updateSalle(id, sals);
 
         response.sendRedirect("/GestionSalles/salle/list?action=list");
+    }
+
+    private void supprimerUnSalle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        salleService.deleteSalle(id);
+
+        response.sendRedirect("/GestionSalles/profs/list?action=list");
     }
 }

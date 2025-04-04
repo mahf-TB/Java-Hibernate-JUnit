@@ -30,7 +30,7 @@
                                     <span class="mt-1 font-medium text-gray-400 text-xs">Liste des salle de classe </span>
                                 </h3>
                                 <div class="relative flex flex-wrap items-center my-2">
-                                    <a href="add" class=" rounded-xl bg-black px-10 py-2 text-white">
+                                    <a href="/GestionSalles/salle/add" class=" rounded-xl bg-black px-10 py-2 text-white">
                                         Ajouter
                                     </a>
                                 </div>

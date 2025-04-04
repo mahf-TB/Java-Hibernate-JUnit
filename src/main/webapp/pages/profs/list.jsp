@@ -65,7 +65,7 @@
                                             </button>
                                         </div>
 
-                                        <a href="add" class="rounded-xl bg-black px-10 py-2 text-white">
+                                        <a href="/GestionSalles/profs/add" class="rounded-xl bg-black px-10 py-2 text-white">
                                             Ajouter
                                         </a>
                                     </div>

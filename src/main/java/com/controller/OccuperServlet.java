@@ -4,6 +4,8 @@
  */
 package com.controller;
 
+import com.model.Occuper;
+import com.model.Salle;
 import com.model.enumModel.TypeOccupation;
 import com.services.OccuperService;
 
@@ -34,9 +36,26 @@ public class OccuperServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
 
+        if (action.isEmpty()) {
+            action = "list";
+        }
+
+        switch (action) {
+            case "list":
+                //afficherProfesseurs(request, response);
+                break;
+            case "search":
+                //searchProfesseursByNPC(request, response);
+                break;
+            case "edit":
+                afficherDetailsPlanning(request, response);
+                break;
+            default:
+                response.sendRedirect("/GestionSalles/profs/list");
+        }
     }
 
     @Override
@@ -60,16 +79,13 @@ public class OccuperServlet extends HttpServlet {
         }
     }
 
-    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        TypeOccupation type = TypeOccupation.valueOf(request.getParameter("type"));
+    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {      
         LocalDate date = LocalDate.parse(request.getParameter("date"));
-
         LocalTime heureDebut = LocalTime.parse(request.getParameter("heureDebut"));
         LocalTime heureFin = LocalTime.parse(request.getParameter("heureFin"));
-
-        int profId = Integer.parseInt(request.getParameter("profId"));
         int salleId = Integer.parseInt(request.getParameter("salleId"));
-
+        int profId = Integer.parseInt(request.getParameter("profId"));
+        
         Map<String, Object> formData = new HashMap<>();
         formData.put("heureDebut", request.getParameter("heureDebut"));
         formData.put("heureFin", request.getParameter("heureFin"));
@@ -85,8 +101,16 @@ public class OccuperServlet extends HttpServlet {
             request.getRequestDispatcher("pages/planning/add.jsp").forward(request, response);
             return;
         }
-        boolean estDisponible = occpService.salleDisponible(date, heureDebut, heureFin, salleId);
 
+        boolean estProfDisponible = occpService.profIsDisponible(date, heureDebut, heureFin, profId);
+        if (!estProfDisponible) {
+            request.setAttribute("error", "Le Prof est déjà occupée à ce créneau.");
+            request.setAttribute("formData", formData);
+            request.getRequestDispatcher("pages/planning/add.jsp").forward(request, response);
+            return;
+        }
+
+        boolean estDisponible = occpService.salleDisponible(date, heureDebut, heureFin, salleId);
         if (!estDisponible) {
             request.setAttribute("error", "La salle est déjà occupée à ce créneau.");
             request.setAttribute("formData", formData);
@@ -94,9 +118,15 @@ public class OccuperServlet extends HttpServlet {
             return;
         }
 
-        occpService.ajouterPlanning(date, type, heureDebut, heureFin, profId, salleId);
-
+        occpService.ajouterPlanning(formData);
         response.sendRedirect("/GestionSalles/planning/list");
+    }
+
+    private void afficherDetailsPlanning(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Occuper details = occpService.getPlanningById(id);
+        request.setAttribute("detailsPlan", details);
+        request.getRequestDispatcher("pages/planning/update.jsp").forward(request, response);
     }
 
     private void supprimerPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -105,4 +135,5 @@ public class OccuperServlet extends HttpServlet {
 
         response.sendRedirect("/GestionSalles/planning/list");
     }
+
 }

@@ -4,6 +4,7 @@
     Author     : mahefa
 --%>
 
+<%@page import="com.services.OccuperService"%>
 <%@page import="java.util.Map"%>
 <%@page import="com.dao.SalleDAO"%>
 <%@page import="com.model.Salle"%>
@@ -56,23 +57,8 @@
 
     </head>
     <body>
-        <%!
-            public String isSelected(Map<String, Object> formData, String key, long value) {
-                if (formData != null && formData.get(key) != null) {
-                    String formValue = formData.get(key).toString();
-                    try {
-                        long formLongValue = Long.parseLong(formValue); // Conversion en long
-                        if (formLongValue == value) {
-                            return "selected";
-                        }
-                    } catch (NumberFormatException e) {
-                        // Ignorer l'erreur de format si elle se produit
-                    }
-                }
-                return "";
-            }
-        %>
         <%
+            OccuperService serviceOccp = new OccuperService();
             SalleDAO profDAO = new SalleDAO();
             List<Salle> salles = profDAO.findAll();
             // liste des professeur
@@ -87,7 +73,7 @@
             <div class="flex mt-10 h-screen justify-center bg-white  overflow-y-auto  px-4">
                 <div class="mx-auto w-full max-w-xl">
                     <h1 class="text-4xl font-medium uppercase ">Créer un nouveau planning</h1>
-                    <p class="mt-3 text-xs text-gray-500 mb-5">Les champ avec * son obligatoire</p>
+                    <p class="mt-3 text-sm text-gray-500 mb-5">Les champ avec <span class="text-red-500">*</span>  son obligatoire</p>
 
                     <form  method="POST" action="/GestionSalles/occuper-servlet" >
                         <% if (request.getAttribute("error") != null) {%>
@@ -98,51 +84,6 @@
                         <input type="hidden" name="action" value="ajouter">
                         <input type="hidden" name="type" value="COURS">
                         <div class="grid gap-6">
-
-                            <!-- Date du events  -->
-                            <div class="relative z-0 w-full ">
-                                <input
-                                    type="text"
-                                    name="date"
-                                    placeholder=""
-                                    required
-                                    value="<%= formData != null && formData.get("date") != null ? formData.get("date") : ""%>"
-                                    onclick="this.setAttribute('type', 'date');"
-                                    class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
-                                    />
-                                <label for="date" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Date</label>
-                                <span class="text-sm text-red-600 hidden" id="error">Date is required</span>
-                            </div>
-                            <!-- Heure debut et fin  -->
-                            <div class="grid gap-4 sm:grid-cols-2">
-                                <div class="relative z-0 w-full">
-                                    <input
-                                        type="text"
-                                        name="heureDebut"
-                                        placeholder=" "
-                                        required
-                                        value="<%= formData != null && formData.get("heureDebut") != null ? formData.get("heureDebut") : ""%>"
-                                        onclick="this.setAttribute('type', 'time');"
-                                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
-                                        />
-                                    <label for="heureDebut" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Début à </label>
-                                    <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
-                                </div>
-                                
-                                <div class="relative z-0 w-full">
-                                    <input
-                                        type="text"
-                                        name="heureFin"
-                                        placeholder=" "
-                                        required
-                                        value="<%= formData != null && formData.get("heureFin") != null ? formData.get("heureFin") : ""%>"
-                                        onclick="this.setAttribute('type', 'time');"
-                                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
-                                        />
-                                    <label for="heureFin" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Finie à</label>
-                                    <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
-                                </div>
-                            </div>
                             <!-- SELECT UN PROFESSEUR -->
                             <div class="relative z-0 w-full ">
                                 <select
@@ -157,18 +98,62 @@
                                             for (Professeur prof : professeurs) {
                                     %>
                                     <option 
-                                        <%= isSelected(formData, "profId", prof.getId())%>
+                                        <%= serviceOccp.isSelected(formData, "profId", prof.getId())%>
                                         value="<%= prof.getId()%>"><%= prof.getNom() + " " + prof.getPrenom()%> </option>
                                     <%
                                             }
                                         }
                                     %>w
 
-
                                 </select>
-                                <label for="profId" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Select un professeur</label>
+                                <label for="profId" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Select un professeur  <span class="text-red-500">*</span> </label>
                                 <span class="text-sm text-red-600 hidden" id="error">Option has to be selected</span>
                             </div>
+                            <!-- Date du events  -->
+                            <div class="relative z-0 w-full ">
+                                <input
+                                    type="text"
+                                    name="date"
+                                    placeholder=""
+                                    required
+                                    value="<%= formData != null && formData.get("date") != null ? formData.get("date") : ""%>"
+                                    onclick="this.setAttribute('type', 'date');"
+                                    class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+                                    />
+                                <label for="date" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Date <span class="text-red-500">*</span> </label>
+                                <span class="text-sm text-red-600 hidden" id="error">Date is required</span>
+                            </div>
+                            <!-- Heure debut et fin  -->
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <div class="relative z-0 w-full">
+                                    <input
+                                        type="text"
+                                        name="heureDebut"
+                                        placeholder=" "
+                                        required
+                                        value="<%= formData != null && formData.get("heureDebut") != null ? formData.get("heureDebut") : ""%>"
+                                        onclick="this.setAttribute('type', 'time');"
+                                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+                                        />
+                                    <label for="heureDebut" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Début à  <span class="text-red-500">*</span> </label>
+                                    <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
+                                </div>
+
+                                <div class="relative z-0 w-full">
+                                    <input
+                                        type="text"
+                                        name="heureFin"
+                                        placeholder=" "
+                                        required
+                                        value="<%= formData != null && formData.get("heureFin") != null ? formData.get("heureFin") : ""%>"
+                                        onclick="this.setAttribute('type', 'time');"
+                                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+                                        />
+                                    <label for="heureFin" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Finie à  <span class="text-red-500">*</span> </label>
+                                    <span class="text-sm text-red-600 hidden" id="error">Time is required</span>
+                                </div>
+                            </div>
+
                             <!-- SELECT UN SALLE DE CLASSE  -->
                             <div class="relative z-0 w-full ">
                                 <select
@@ -183,7 +168,7 @@
                                             for (Salle salle : salles) {
                                     %>
                                     <option 
-                                        <%= isSelected(formData, "salleId", salle.getId())%>
+                                        <%= serviceOccp.isSelected(formData, "salleId", salle.getId())%>
                                         value="<%= salle.getId()%>"><%= salle.getDesignation() + " (" + salle.getCodeSalle() + ")"%> </option>
                                     <%
                                             }
@@ -191,7 +176,7 @@
                                     %>
 
                                 </select>
-                                <label for="salleId" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Select un salle</label>
+                                <label for="salleId" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Select un salle  <span class="text-red-500">*</span> </label>
                                 <span class="text-sm text-red-600 hidden" id="error">Option has to be selected</span>
                             </div>
 
@@ -207,7 +192,7 @@
 
         <script>
             'use strict'
-            
+
             document.getElementById('button').addEventListener('click', toggleError);
             const errMessages = document.querySelectorAll('#error');
 

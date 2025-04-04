@@ -36,4 +36,14 @@ public class SalleService {
         Salle salle = salsDAO.findById(profId);
         return salle;
     }
+    
+        public void deleteSalle(int profId) {
+        Salle sls = salsDAO.findById(profId);
+        if (sls != null) {
+            salsDAO.delete(sls);
+        } else {
+            System.out.println("Salle de classe introuvable avec ID : " + profId);
+        }
+
+    }
 }

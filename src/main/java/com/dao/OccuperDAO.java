@@ -39,4 +39,22 @@ public class OccuperDAO extends DAOGeneric<Occuper> {
         }
     }
 
+    
+        public boolean estProfesseurDisponible(Long profId, LocalDate date, LocalTime heureDebut, LocalTime heureFin) {
+        String hql = "SELECT COUNT(o) FROM Occuper o "
+                +"WHERE o.prof.id = :profId "
+               +" AND o.date = :date "
+               +" AND (o.heureDebut < :heureFin AND o.heureFin > :heureDebut)";
+        
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("profId", profId);
+            query.setParameter("date", date);
+            query.setParameter("heureDebut", heureDebut);
+            query.setParameter("heureFin", heureFin);
+
+            Long count = query.uniqueResult();
+            return count == 0; // True si pas de conflit
+        }
+    }
 }

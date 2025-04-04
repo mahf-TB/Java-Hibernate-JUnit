@@ -5,17 +5,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
+
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  *
@@ -39,7 +41,7 @@ public class Occuper {
     @Column(name = "heure_debut", nullable = false)
     private LocalTime heureDebut;
 
-    @Column(name = "heure_fin", nullable = true)
+    @Column(name = "heure_fin", nullable = false)
     private LocalTime heureFin;
 
     @ManyToOne
@@ -50,7 +52,6 @@ public class Occuper {
     @JoinColumn(name = "salle_id")
     private Salle salle;
 
- 
     public Occuper() {
     }
 
@@ -61,7 +62,7 @@ public class Occuper {
         this.heureFin = heureFin;
         this.prof = prof;
         this.salle = salle;
-    
+
     }
 
     public Long getId() {
@@ -92,8 +93,6 @@ public class Occuper {
         return salle;
     }
 
- 
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -122,11 +121,23 @@ public class Occuper {
         this.salle = salle;
     }
 
+    @Transient
+    public boolean isEstPasse() {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
 
+        if (this.date.isBefore(today)) {
+            return true;
+        } else if (this.date.isEqual(today) && this.heureFin.isBefore(now)) {
+            return true;
+        }
+        return false;
+    }
 
-    
-    
-    
+    public String getFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
+        return date.format(formatter);
+    }
 
     @Override
     public String toString() {

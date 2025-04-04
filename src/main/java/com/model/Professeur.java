@@ -24,7 +24,7 @@ public class Professeur {
     private String nom;
     @Column
     private String prenom;
-    @Column
+    @Column(nullable = true)
     private String grade;
 
     public Professeur() {
