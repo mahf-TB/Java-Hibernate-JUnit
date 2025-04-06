@@ -5,53 +5,41 @@
 package com.websocket;
 
 import jakarta.websocket.*;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import jakarta.websocket.server.ServerEndpoint;
 
 /**
  *
  * @author mahefa
  */
-
-
+@ServerEndpoint("/api/planning") 
 public class PlanningWebSocket {
 
-    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
-        
+    private static Session session;
+
     @OnOpen
-    public void onOpen(Session session) {
-        sessions.add(session);
+    public void onOpen(Session s) {
+        session = s;
         System.out.println("Nouvelle connexion WebSocket : " + session.getId());
     }
-    
-     @OnClose
+
+    @OnClose
     public void onClose(Session session) {
-        sessions.remove(session);
+        session = null;
         System.out.println("Connexion WebSocket fermée : " + session.getId());
     }
 
-    @OnMessage
-    public void onMessage(String message, Session session) {
-        System.out.println("Message reçu : " + message);
-        broadcast(message);
+     public static void notifyClients() {
+        if (session != null && session.isOpen()) {
+            try {
+                session.getBasicRemote().sendText("refresh");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
         System.err.println("Erreur WebSocket : " + throwable.getMessage());
-    }
-
-    public static void broadcast(String message) {
-        synchronized (sessions) {
-            for (Session session : sessions) {
-                try {
-                    session.getBasicRemote().sendText(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 }

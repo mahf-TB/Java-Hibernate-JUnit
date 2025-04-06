@@ -69,7 +69,7 @@ public class OccuperServlet extends HttpServlet {
                 creerUnPlanning(request, response);
                 break;
             case "modifier":
-                //modifierProf(request, response);
+                modifierPlannig(request, response);
                 break;
             case "supprimer":
                 supprimerPlanning(request, response);
@@ -79,13 +79,13 @@ public class OccuperServlet extends HttpServlet {
         }
     }
 
-    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {      
+    private void creerUnPlanning(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         LocalDate date = LocalDate.parse(request.getParameter("date"));
         LocalTime heureDebut = LocalTime.parse(request.getParameter("heureDebut"));
         LocalTime heureFin = LocalTime.parse(request.getParameter("heureFin"));
         int salleId = Integer.parseInt(request.getParameter("salleId"));
         int profId = Integer.parseInt(request.getParameter("profId"));
-        
+
         Map<String, Object> formData = new HashMap<>();
         formData.put("heureDebut", request.getParameter("heureDebut"));
         formData.put("heureFin", request.getParameter("heureFin"));
@@ -134,6 +134,36 @@ public class OccuperServlet extends HttpServlet {
         occpService.deleteOccupation(id);
 
         response.sendRedirect("/GestionSalles/planning/list");
+    }
+
+    private void modifierPlannig(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        
+        int Id = Integer.parseInt(request.getParameter("id"));
+        //LocalDate date = LocalDate.parse(request.getParameter("date"));
+        LocalTime heureDebut = LocalTime.parse(request.getParameter("heureDebut"));
+        LocalTime heureFin = LocalTime.parse(request.getParameter("heureFin"));
+        //int salleId = Integer.parseInt(request.getParameter("salleId"));
+        //int profId = Integer.parseInt(request.getParameter("profId"));
+
+        Map<String, Object> formData = new HashMap<>();
+        formData.put("heureDebut", request.getParameter("heureDebut"));
+        formData.put("heureFin", request.getParameter("heureFin"));
+        formData.put("type", request.getParameter("type"));
+        formData.put("date", request.getParameter("date"));
+        formData.put("profId", request.getParameter("profId"));
+        formData.put("salleId", request.getParameter("salleId"));
+
+        // Vérifier que heureDebut est avant heureFin
+        if (heureDebut.isAfter(heureFin)) {
+            request.setAttribute("error", "L'heure de début doit être inférieure à l'heure de fin.");
+            request.setAttribute("formData", formData);
+            request.getRequestDispatcher("pages/planning/add.jsp").forward(request, response);
+            return;
+        }
+
+        occpService.modifierPlanning(Id, formData);
+
+        response.sendRedirect("/GestionSalles/planning/list?action=list");
     }
 
 }

@@ -45,8 +45,39 @@ public class OccuperService {
 
         Occuper occup = new Occuper(date, type, heureDebut, heureFin, prof, sls);
         // Envoyer une notification WebSocket
-        PlanningWebSocket.broadcast("Mise à jour du planning !");
+        PlanningWebSocket.notifyClients();
+
         occpDAO.save(occup);
+    }
+
+    public void modifierPlanning(int id, Map<String, Object> formData) {
+
+        TypeOccupation type = TypeOccupation.valueOf(formData.get("type").toString());
+        LocalDate date = LocalDate.parse(formData.get("date").toString());
+        LocalTime heureDebut = LocalTime.parse(formData.get("heureDebut").toString());
+        LocalTime heureFin = LocalTime.parse(formData.get("heureFin").toString());
+        int profId = Integer.parseInt(formData.get("profId").toString());
+        int salleId = Integer.parseInt(formData.get("salleId").toString());
+
+        Professeur prof = profService.getProfById(profId);
+        Salle sls = salleService.getSalleById(salleId);
+
+        Occuper occup = occpDAO.findById(id);
+        if (occup != null) {
+            occup.setType(type);
+            occup.setDate(date);
+            occup.setHeureDebut(heureDebut);
+            occup.setHeureFin(heureFin);
+            occup.setProf(prof);
+            occup.setSalle(sls);
+
+            // Envoyer une notification WebSocket
+            PlanningWebSocket.notifyClients();
+            occpDAO.update(occup);
+        } else {
+            System.out.println("Professeur introuvable avec ID : " + profId);
+        }
+
     }
 
     public boolean salleDisponible(LocalDate date, LocalTime heureDebut, LocalTime heureFin, long salsId) {
@@ -73,14 +104,13 @@ public class OccuperService {
             if (dateCompare != 0) {
                 return a.isEstPasse() ? -dateCompare : dateCompare;
             }
-
             // Si même date, trier par heure
             return a.isEstPasse()
                     ? b.getHeureDebut().compareTo(a.getHeureDebut())
                     : // pour les passés, du plus récent au plus ancien
                     a.getHeureDebut().compareTo(b.getHeureDebut());  // pour les futurs, du plus proche au plus lointain
         });
-        
+
         return plannings;
     }
 

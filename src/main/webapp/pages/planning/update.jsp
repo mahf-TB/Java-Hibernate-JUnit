@@ -20,6 +20,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Formulaire d'ajouter un prof</title>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        
         <style>
             .-z-1 {
                 z-index: -1;
@@ -56,7 +57,7 @@
                 left: 0px;
             }
         </style>
-
+        
     </head>
     <body>
         <%
@@ -81,7 +82,7 @@
             <div class="flex mt-10 h-screen justify-center bg-white  overflow-y-auto  px-4">
                 <div class="mx-auto w-full max-w-xl">
                     <h1 class="text-4xl font-medium uppercase ">Créer un nouveau planning</h1>
-                    <p class="mt-3 text-sm text-gray-500 mb-5">Les champ avec <span class="text-red-500">*</span>  son obligatoire</p>
+                    <p class="mt-3 text-sm text-gray-500 mb-10">Les champ avec <span class="text-red-500">*</span>  son obligatoire</p>
 
                     <form  method="POST" action="/GestionSalles/occuper-servlet" class="mt-5">
                         <% if (request.getAttribute("error") != null) {%>
@@ -91,6 +92,7 @@
                         <% }%>
                         <input type="hidden" name="action" value="modifier">
                         <input type="hidden" name="type" value="COURS">
+                        <input type="hidden" name="id" value="<%= plan.getId() %>">
                         <div class="grid gap-6">
                             <!-- SELECT UN PROFESSEUR -->
                             <div class="relative z-0 w-full ">
@@ -194,7 +196,7 @@
 
                         </div>
                         <div class="flex justify-start mt-10 space-x-2">
-                            <a href="/GestionSalles/profs/list" class="rounded-md bg-gray-200 px-10 py-2 text-gray-800">Retour</a>
+                            <a href="/GestionSalles/planning/list" class="rounded-md bg-gray-200 px-10 py-2 text-gray-800">Retour</a>
                             <button type="submit" class="rounded-md bg-black px-10 py-2 text-white">Enregistrer</button>
                         </div>
                     </form>

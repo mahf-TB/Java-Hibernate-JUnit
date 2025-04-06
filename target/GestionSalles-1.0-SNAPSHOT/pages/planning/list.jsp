@@ -20,7 +20,7 @@
         <div class="bg-white ">
             <%@include file="/includes/Header.jsp"%>
             <section class="container px-6 py-10 mx-auto mb-14">
-                <div class="flex items-center justify-between max-lg:flex-col max-lg:items-start">
+                <div class="flex items-center justify-between max-lg:gap-4 max-lg:flex-col max-lg:items-start">
                     <div>
                         <h1 class="text-xl font-semibold text-gray-800 capitalize lg:text-2xl ">
                             Découvrez nos  <span class="underline decoration-blue-500">Plannings Occuper</span>
@@ -29,8 +29,8 @@
                             Consultez les plannings disponibles pour une gestion optimale des salles.
                         </p>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="flex  w-full lg:max-w-[600px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
+                    <div class="flex items-center justify-end w-1/2 gap-3">
+                        <div class="flex  w-full lg:max-w-[400px] rounded-full border-gray-400 border-opacity-65   border bg-gray-100 px-2">
                             <input type="hidden" name="action" value="search">
                             <input type="text" id="searchInput" name="query"  
                                    class="flex w-full text-xs bg-transparent px-3 text-gray-700 rtl:text-right outline-0" 
@@ -62,9 +62,12 @@
                         if (occps != null && !occps.isEmpty()) {
                             for (Occuper occ : occps) {
                     %>
-                    <div class="p-4 space-y-4 border-2  rounded-xl  <%= occ.isEstPasse() ? "border-gray-400 bg-gray-100" :"bg-white border-blue-400 shadow-lg"%> ">
+                    <div class="p-4 space-y-4 border-2  rounded-xl  
+                         <%= occ.isEstPasse()
+                                 ? "border-gray-400 bg-gray-100 bg-[repeating-linear-gradient(45deg,#f3f4f6_0px,#f3f4f6_10px,#e5e7eb_10px,#e5e7eb_20px)]"
+                                 : "bg-white border-blue-400 shadow-lg"%> ">
                         <div class="flex items-center gap-4">
-                            <span class="inline-block text-blue-500 <%= occ.isEstPasse() ? "text-gray-500 ":"text-blue-500 " %>">
+                            <span class="inline-block text-blue-500 <%= occ.isEstPasse() ? "text-gray-500 " : "text-blue-500 "%>">
                                 <!-- Icône pour chaque tâche -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
@@ -125,7 +128,7 @@
                         <!-- Boutons Modifier et Supprimer -->
                         <div class="flex space-x-4 mt-4 justify-end">
                             <a href="/GestionSalles/occuper-servlet?action=edit&id=<%= occ.getId()%>" 
-                               class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600 transition-colors duration-200 <%= occ.isEstPasse() ? "hidden ":"" %>">
+                               class="flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600 transition-colors duration-200 <%= occ.isEstPasse() ? "hidden " : ""%>">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 4h4v4M16 4l5 5M4 12v7a1 1 0 001 1h11a1 1 0 001-1v-7M4 12l5 5" />
                                 </svg>
@@ -174,40 +177,24 @@
             </div>
         </div>
         <script>
-            let socket;
+            const socket = new WebSocket("ws://localhost:8080/GestionSalles/api/planning");
+            
+            socket.onopen = function () {
+                console.log("Connexion WebSocket ouverte.");
+            };
 
-            function connectWebSocket() {
-                socket = new WebSocket("ws://localhost:8080/GestionSalles/api/planning");
+            socket.onmessage = function (event) {
+                 console.log("Connexion WebSocket message passe...");
+                if (event.data === "refresh") {
+                    location.reload(); // Recharge toute la page
+                }
+            };
+            socket.onclose = function (event) {
+                console.log("Connexion WebSocket fermée, reconnexion...");
+            };
 
-                socket.onopen = function () {
-                    console.log("Connexion WebSocket ouverte.");
-                };
-
-                socket.onmessage = function (event) {
-                    console.log("Mise à jour reçue :", event.data);
-                    refreshPlanning();
-                };
-
-                socket.onclose = function (event) {
-                    console.log("Connexion WebSocket fermée, reconnexion...");
-                };
-
-                socket.onerror = function (error) {
-                    console.error("Erreur WebSocket :", error);
-                };
-            }
-
-            function refreshPlanning() {
-                fetch("list.jsp")
-                        .then(response => response.text())
-                        .then(data => {
-                            document.getElementById("planning-container").innerHTML = data;
-                        })
-                        .catch(error => console.error("Erreur lors du rafraîchissement :", error));
-            }
-
-            window.onload = function () {
-                connectWebSocket();
+            socket.onerror = function (error) {
+                console.error("Erreur WebSocket :", error);
             };
         </script>
     </body>
